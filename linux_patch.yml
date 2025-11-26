@@ -1,0 +1,53 @@
+---
+- name: Linux Patch Management
+  hosts: linux_servers
+  become: yes
+  gather_facts: yes
+
+  tasks:
+
+    - name: Update package cache (Debian/Ubuntu)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Upgrade all packages (Debian/Ubuntu)
+      apt:
+        upgrade: dist
+        autoremove: yes
+        autoremove_script: true
+      when: ansible_os_family == "Debian"
+
+    - name: Update packages on RHEL/CentOS/Fedora/Rocky
+      yum:
+        name: "*"
+        state: latest
+      when: ansible_os_family == "RedHat"
+
+    - name: Clean YUM metadata (RHEL/CentOS/Fedora/Rocky)
+      command: yum clean all
+      when: ansible_os_family == "RedHat"
+
+    - name: Check whether a reboot is required (Debian/Ubuntu)
+      stat:
+        path: /var/run/reboot-required
+      register: reboot_required_file
+      when: ansible_os_family == "Debian"
+
+    - name: Reboot system if required (Debian/Ubuntu)
+      reboot:
+        msg: "Rebooting after patching"
+        reboot_timeout: 600
+      when: reboot_required_file.stat.exists == true
+
+    - name: Check if reboot is required (RedHat/Fedora)
+      command: needs-restarting -r
+      register: reboot_required_rhel
+      ignore_errors: yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Reboot if needed (RedHat/Fedora)
+      reboot:
+        msg: "Rebooting after updates"
+        reboot_timeout: 600
+      when: reboot_required_rhel.rc == 1
