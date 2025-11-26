@@ -1,0 +1,24 @@
+---
+- name: Windows Patch Management
+  hosts: windows_servers
+  gather_facts: no
+
+  tasks:
+    - name: Install all available updates and list them
+      win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+          - UpdateRollups
+        state: installed
+      register: update_output
+
+    - name: Show updates that were installed
+      debug:
+        var: update_output
+
+    - name: Reboot if required
+      win_reboot:
+        msg: "Rebooting after patching"
+        reboot_timeout: 1200
+      when: update_output.reboot_required
