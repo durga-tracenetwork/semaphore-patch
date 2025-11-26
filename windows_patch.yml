@@ -1,21 +1,24 @@
 ---
 - name: Windows Patch Management
-  hosts: windows_laptop
+  hosts: windows_servers
   gather_facts: no
 
   tasks:
-
-    - name: Install all Critical, Security, and Rollup updates
+    - name: Install all available updates and list them
       win_updates:
         category_names:
-          - CriticalUpdates
           - SecurityUpdates
+          - CriticalUpdates
           - UpdateRollups
         state: installed
-        reboot: yes
+      register: update_output
+
+    - name: Show updates that were installed
+      debug:
+        var: update_output
 
     - name: Reboot if required
       win_reboot:
-        msg: "Rebooting after installing Windows updates"
-        reboot_timeout: 1800
-        connect_timeout: 600
+        msg: "Rebooting after patching"
+        reboot_timeout: 1200
+      when: update_output.reboot_required
