@@ -1,0 +1,6 @@
+---
+- name: Test Windows Connectivity
+  hosts: windows_laptop
+  tasks:
+    - name: Run test command
+      win_ping:
