@@ -1,0 +1,25 @@
+---
+- name: Check installed updates on Linux
+  hosts: linux_servers
+  become: yes
+
+  tasks:
+    - name: Show apt history (Ubuntu/Debian)
+      shell: cat /var/log/apt/history.log
+      register: apt_history
+      when: ansible_os_family == "Debian"
+
+    - name: Print apt history
+      debug:
+        msg: "{{ apt_history.stdout }}"
+      when: ansible_os_family == "Debian"
+
+    - name: Show yum history (RHEL/CentOS)
+      shell: yum history
+      register: yum_history
+      when: ansible_os_family == "RedHat"
+
+    - name: Print yum history
+      debug:
+        msg: "{{ yum_history.stdout }}"
+      when: ansible_os_family == "RedHat"
