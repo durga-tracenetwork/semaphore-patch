@@ -1,6 +1,6 @@
 ---
 - name: Windows Software Patch Management (Chocolatey)
-  hosts: windows_software_patch
+  hosts: windows_servers
   gather_facts: no
 
   tasks:
