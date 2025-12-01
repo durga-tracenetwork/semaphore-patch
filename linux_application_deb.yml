@@ -1,0 +1,20 @@
+---
+- name: Install Sublime Text (.deb) on Linux
+  hosts: linux_servers
+  become: yes
+
+  vars:
+    sublime_deb_url: "https://www.sublimetext.com/download_thanks?target=x64-deb"
+    sublime_deb_file: "/tmp/sublime.deb"
+
+  tasks:
+
+    - name: Download Sublime .deb package
+      get_url:
+        url: "{{ sublime_deb_url }}"
+        dest: "{{ sublime_deb_file }}"
+
+    - name: Install Sublime Text package
+      apt:
+        deb: "{{ sublime_deb_file }}"
+        state: present
