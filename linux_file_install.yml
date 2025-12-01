@@ -1,0 +1,21 @@
+---
+- name: Install local Sublime Text .deb package
+  hosts: linux_servers
+  become: yes
+
+  tasks:
+
+    - name: Copy Sublime Text .deb to the target system
+      copy:
+        src: "/home/user/packages/sublime-text_latest_amd64.deb"
+        dest: "/tmp/sublime.deb"
+
+    - name: Install the .deb package
+      apt:
+        deb: "/tmp/sublime.deb"
+        state: present
+
+    - name: Fix missing dependencies (if any)
+      apt:
+        upgrade: dist
+        update_cache: yes
