@@ -3,9 +3,27 @@
   hosts: windows_servers
   gather_facts: no
 
+  vars:
+    choco_software_packages:
+      - googlechrome
+      - firefox
+      - zoom
+      - vlc
+      - vscode
+      - notepadplusplus
+      - 7zip
+      - winrar
+      - jdk11
+      - python
+      - postman
+      - git
+      - slack
+
   tasks:
+
     - name: Ensure Chocolatey is installed
       win_chocolatey:
+        name: chocolatey
         state: present
 
     - name: Capture installed package versions (Before Update)
@@ -20,20 +38,7 @@
       win_chocolatey:
         name: "{{ item }}"
         state: latest
-      loop:
-        - googlechrome
-        - firefox
-        - zoom
-        - vlc
-        - vscode
-        - notepadplusplus
-        - 7zip
-        - winrar
-        - jdk11
-        - python
-        - postman
-        - git
-        - slack
+      loop: "{{ choco_software_packages }}"
       register: update_result
 
     - name: Capture installed package versions (After Update)
@@ -47,5 +52,6 @@
     - name: Show update summary
       debug:
         msg: >
-          Updated package: {{ item.item }} | Status: {{ item.msg | default('') }}
+          Updated package: {{ item.item }}
+          | Status: {{ item.msg | default('') }}
       loop: "{{ update_result.results }}"
