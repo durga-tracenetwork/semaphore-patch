@@ -5,7 +5,8 @@
 
   vars:
     choco_software_packages:
-      - winrar
+      - vlc
+      - firefox
 
   tasks:
 
