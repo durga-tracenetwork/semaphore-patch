@@ -12,6 +12,4 @@
       win_chocolatey:
         name: "{{ item }}"
         state: absent
-        force: yes
-        ignore_errors: yes
       loop: "{{ uninstall_list }}"
