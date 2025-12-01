@@ -1,0 +1,19 @@
+---
+- name: Install software on Linux (Generic Template)
+  hosts: linux_servers
+  become: yes
+  gather_facts: yes
+
+  vars:
+    package_name: "sublime-text"   # <--- change this only
+
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install "{{ package_name }}"
+      apt:
+        name: "{{ package_name }}"
+        state: present
