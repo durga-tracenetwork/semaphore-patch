@@ -1,0 +1,46 @@
+---
+- name: Fully remove VLC Media Player
+  hosts: windows_servers
+  gather_facts: no
+
+  tasks:
+
+    # 1. Kill VLC if running
+    - name: Kill VLC process if active
+      win_shell: taskkill /IM vlc.exe /F
+      ignore_errors: yes
+
+    # 2. Try uninstall via Chocolatey
+    - name: Uninstall VLC using Chocolatey
+      win_chocolatey:
+        name: vlc
+        state: absent
+        force: yes
+      ignore_errors: yes
+
+    # 3. Try uninstall using MSI GUID
+    - name: Detect VLC MSI GUID
+      win_shell: |
+        (Get-WmiObject Win32_Product | Where-Object {$_.Name -like "*VLC*"}).IdentifyingNumber
+      register: vlc_guid
+
+    - name: Uninstall VLC via MSI GUID
+      win_package:
+        product_id: "{{ vlc_guid.stdout }}"
+        state: absent
+      when: vlc_guid.stdout != ""
+      ignore_errors: yes
+
+    # 4. Try uninstall via uninstall.exe
+    - name: Uninstall using uninstall.exe (if exists)
+      win_shell: '"C:\Program Files\VideoLAN\VLC\uninstall.exe" /S'
+      args:
+        chdir: "C:\\Program Files\\VideoLAN\\VLC"
+      ignore_errors: yes
+
+    # 5. Delete VLC folder (final cleanup)
+    - name: Remove VLC folder manually
+      win_file:
+        path: "C:\\Program Files\\VideoLAN"
+        state: absent
+      ignore_errors: yes
