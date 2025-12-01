@@ -4,7 +4,7 @@
   become: yes
 
   vars:
-    sublime_deb_url: "https://www.sublimetext.com/download_thanks?target=x64-deb"
+    sublime_deb_url: "https://download.sublimetext.com/sublime-text_latest_amd64.deb"
     sublime_deb_file: "/tmp/sublime.deb"
 
   tasks:
