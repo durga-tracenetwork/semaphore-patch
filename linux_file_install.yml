@@ -7,7 +7,7 @@
 
     - name: Copy Sublime Text .deb to the target system
       copy:
-        src: "/home/user/packages/sublime-text_latest_amd64.deb"
+        src: "/home/glpi-test/Downloads/sublime-text_build-4200_amd64(1).deb"
         dest: "/tmp/sublime.deb"
 
     - name: Install the .deb package
