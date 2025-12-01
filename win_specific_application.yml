@@ -1,0 +1,17 @@
+---
+- name: Install a specific version of Notepad++ using Chocolatey
+  hosts: windows_servers
+  gather_facts: no
+
+  tasks:
+
+    - name: Ensure Chocolatey is installed
+      win_chocolatey:
+        name: chocolatey
+        state: present
+
+    - name: Install Notepad++ version 8.8.2
+      win_chocolatey:
+        name: notepadplusplus
+        version: '8.8.2'
+        state: present
