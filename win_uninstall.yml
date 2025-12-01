@@ -5,7 +5,7 @@
 
   vars:
     uninstall_list:
-      - vlc
+      - firefox
 
   tasks:
     - name: Uninstall selected applications
