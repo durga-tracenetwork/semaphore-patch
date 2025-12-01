@@ -5,19 +5,8 @@
 
   vars:
     choco_software_packages:
-      - googlechrome
-      - firefox
-      - zoom
-      - vlc
-      - vscode
-      - notepadplusplus
       - 7zip
       - winrar
-      - jdk11
-      - python
-      - postman
-      - git
-      - slack
 
   tasks:
 
