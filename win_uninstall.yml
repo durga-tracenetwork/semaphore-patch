@@ -1,0 +1,15 @@
+---
+- name: Uninstall selected Windows software
+  hosts: windows_servers
+  gather_facts: no
+
+  vars:
+    uninstall_list:
+      - vlc
+
+  tasks:
+    - name: Uninstall selected applications
+      win_chocolatey:
+        name: "{{ item }}"
+        state: absent
+      loop: "{{ uninstall_list }}"
