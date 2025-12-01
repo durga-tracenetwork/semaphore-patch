@@ -1,0 +1,56 @@
+---
+- name: Windows Software Patch Management (Chocolatey)
+  hosts: windows_software_patch
+  gather_facts: no
+
+  vars:
+    choco_software_packages:
+      - googlechrome
+      - firefox
+      - zoom
+      - vlc
+      - vscode
+      - notepadplusplus
+      - 7zip
+      - winrar
+      - jdk11
+      - python
+      - postman
+      - git
+      - slack
+
+  tasks:
+
+    - name: Ensure Chocolatey is installed
+      win_chocolatey:
+        state: present
+
+    - name: Capture installed package versions (Before Update)
+      win_shell: choco list --local-only --limit-output
+      register: before_update
+
+    - name: Print installed versions (Before)
+      debug:
+        msg: "{{ before_update.stdout_lines }}"
+
+    - name: Update all listed software to latest version
+      win_chocolatey:
+        name: "{{ item }}"
+        state: latest
+      loop: "{{ choco_software_packages }}"
+      register: update_result
+
+    - name: Capture installed package versions (After Update)
+      win_shell: choco list --local-only --limit-output
+      register: after_update
+
+    - name: Print installed versions (After)
+      debug:
+        msg: "{{ after_update.stdout_lines }}"
+
+    - name: Show update summary
+      debug:
+        msg: >
+          Updated package: {{ item.item }}
+          | Status: {{ item.msg | default('') }}
+      loop: "{{ update_result.results }}"
